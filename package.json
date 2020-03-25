@@ -1,0 +1,22 @@
+{
+  "name": "task1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "encode": "CC -s 13 -i 1.txt -o 2.txt -a encode",
+    "decode": "CC -s 13 -i 1.txt -o 2.txt -a decode"
+  },
+  "dependencies": {
+    "boxen": "^4.0.0",
+    "camelcase": "^5.3.1",
+    "chalk": "^2.4.2",
+    "commander": "^5.0.0",
+    "yargs": "^13.2.4"
+  },
+  "author": "DzmitryCavi",
+  "license": "ISC",
+  "bin": {
+    "CC": "./index.js"
+  }
+}

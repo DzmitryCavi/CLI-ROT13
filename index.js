@@ -8,6 +8,8 @@ const stream = require('stream');
 
 const pipeline = util.promisify(stream.pipeline);
 
+process.on('exit', code => {console.log(`\nCode: ${code}`)});
+
 yargs
   .usage('Usage: -s <shift>')
   .option('s', {
@@ -47,8 +49,10 @@ yargs
       new CCTransform(shift, action),
       WriteableStream
     );
-    process.stdout.write(`Text ${action}d`);
+    process.stdout.write(`Text ${action}d\n`);
   } catch (e) {
-    process.stderr.write(` ${e.message}`);
+    process.stderr.write(` ${e.message}\n`);
+    process.exit(1);
   }
 })();
+

@@ -5,10 +5,9 @@ const util = require('util');
 const fs = require('fs');
 const CCTransform = require('./utils/transformer');
 const stream = require('stream');
+const validator =require('./utils/validator');
 
 const pipeline = util.promisify(stream.pipeline);
-
-process.on('exit', code => {console.log(`\nCode: ${code}`)});
 
 yargs
   .usage('Usage: -s <shift>')
@@ -37,10 +36,22 @@ yargs
     demandOption: true
   });
 
+  process.on('exit', code => process.stdout.write(`Code: ${code}`));
+  process.on('SIGINT', _ => { process.exit(0); });
+
 (async _ => {
   const { shift, input, output, action } = yargs.argv;
-  const ReadableStream = input ? fs.createReadStream(input) : process.stdin;
-  const WriteableStream = output
+  if(!validator.isIntNumber(shift)){
+    process.stderr.write(`Shift must be integer!\n`);
+    process.exit(1);
+  }
+  if(!validator.isIn(action, ['encode','decode'])){
+    process.stderr.write(`Action must be "encode" or "decode"\n`);
+    process.exit(1);
+  }
+  validator.isEmpty(input) && process.stdout.write('Enter the text and press ENTER to encode/decode(press CTRL + C to exit):')
+  const ReadableStream = !validator.isEmpty(input) ? fs.createReadStream(input) : process.stdin;
+  const WriteableStream = !validator.isEmpty(output)
     ? fs.createWriteStream(output)
     : process.stdout;
   try {
